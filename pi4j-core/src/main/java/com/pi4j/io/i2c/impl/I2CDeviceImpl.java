@@ -32,6 +32,7 @@ package com.pi4j.io.i2c.impl;
 import java.io.IOException;
 
 import com.pi4j.io.i2c.I2CDevice;
+import com.pi4j.io.i2c.I2CIOException;
 
 /**
  * Implementation of i2c device. This class only holds reference to i2c bus (so it can use its handle) and device address.
@@ -40,6 +41,14 @@ import com.pi4j.io.i2c.I2CDevice;
  *
  */
 public class I2CDeviceImpl implements I2CDevice {
+
+    //TODO: implement bounds checking!
+
+    /**
+     * Size of the internal JNI buffer.
+     * Must match BUFFER_SIZE from the JNI impl.
+     */
+    private static int bufferSize = 256;
 
     /**
      * Reference to i2c bus
@@ -296,15 +305,5 @@ public class I2CDeviceImpl implements I2CDevice {
      */
     protected String makeDescription(int address) {
         return "I2CDevice on " + bus + " at address 0x" + Integer.toHexString(deviceAddress) + " to address 0x" + Integer.toHexString(address);
-    }
-
-    static public class I2CIOException extends IOException {
-        int code;
-
-        public I2CIOException(String msg, int code) {
-            super(msg);
-
-            this.code = code;
-        }
     }
 }
