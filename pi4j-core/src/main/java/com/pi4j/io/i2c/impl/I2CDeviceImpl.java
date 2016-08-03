@@ -90,7 +90,7 @@ public class I2CDeviceImpl implements I2CDevice {
     public void write(final byte data) throws IOException {
         int ret = getBus().writeByteDirect(this, data);
         if (ret < 0) {
-            throw new IOException("Error writing to " + makeDescription() + ". Got '" + ret + "'.");
+            throw new I2CIOException("Error writing to " + makeDescription() + ". Got '" + ret + "'.", ret);
 
         }
     }
@@ -108,7 +108,7 @@ public class I2CDeviceImpl implements I2CDevice {
     public void write(final byte[] data, final int offset, final int size) throws IOException {
         int ret = getBus().writeBytesDirect(this, size, offset, data);
         if (ret < 0) {
-            throw new IOException("Error writing to " + makeDescription() + ". Got '" + ret + "'.");
+            throw new I2CIOException("Error writing to " + makeDescription() + ". Got '" + ret + "'.", ret);
         }
     }
 
@@ -136,7 +136,7 @@ public class I2CDeviceImpl implements I2CDevice {
     public void write(final int address, final byte data) throws IOException {
         int ret = getBus().writeByte(this, address, data);
         if (ret < 0) {
-            throw new IOException("Error writing to " + makeDescription(address) + ". Got '" + ret + "'.");
+            throw new I2CIOException("Error writing to " + makeDescription(address) + ". Got '" + ret + "'.", ret);
         }
     }
 
@@ -154,7 +154,7 @@ public class I2CDeviceImpl implements I2CDevice {
     public void write(final int address, final byte[] data, final int offset, final int size) throws IOException {
         int ret = getBus().writeBytes(this, address, size, offset, data);
         if (ret < 0) {
-            throw new IOException("Error writing to " + makeDescription(address) + ". Got '" + ret + "'.");
+            throw new I2CIOException("Error writing to " + makeDescription(address) + ". Got '" + ret + "'.", ret);
         }
     }
 
@@ -181,7 +181,7 @@ public class I2CDeviceImpl implements I2CDevice {
     public int read() throws IOException {
         int ret = getBus().readByteDirect(this);
         if (ret < 0) {
-            throw new IOException("Error reading from " + makeDescription() + ". Got '" + ret + "'.");
+            throw new I2CIOException("Error reading from " + makeDescription() + ". Got '" + ret + "'.", ret);
         }
         return ret;
     }
@@ -207,7 +207,7 @@ public class I2CDeviceImpl implements I2CDevice {
     public int read(final byte[] data, final int offset, final int size) throws IOException {
         int ret = getBus().readBytesDirect(this, size, offset, data);
         if (ret < 0) {
-            throw new IOException("Error reading from " + makeDescription() + ". Got '" + ret + "'.");
+            throw new I2CIOException("Error reading from " + makeDescription() + ". Got '" + ret + "'.", ret);
         }
         return ret;
     }
@@ -224,7 +224,7 @@ public class I2CDeviceImpl implements I2CDevice {
     public int read(final int address) throws IOException {
         int ret = getBus().readByte(this, address);
         if (ret < 0) {
-            throw new IOException("Error reading from " + makeDescription(address) + ". Got '" + ret + "'.");
+            throw new I2CIOException("Error reading from " + makeDescription(address) + ". Got '" + ret + "'.", ret);
         }
         return ret;
     }
@@ -251,7 +251,7 @@ public class I2CDeviceImpl implements I2CDevice {
     public int read(final int address, final byte[] data, final int offset, final int size) throws IOException {
         int ret = getBus().readBytes(this, address, size, offset, data);
         if (ret < 0) {
-            throw new IOException("Error reading from " + makeDescription(address) + ". Got '" + ret + "'.");
+            throw new I2CIOException("Error reading from " + makeDescription(address) + ". Got '" + ret + "'.", ret);
         }
         return ret;
     }
@@ -274,7 +274,7 @@ public class I2CDeviceImpl implements I2CDevice {
     public int read(final byte[] writeData, final int writeOffset, final int writeSize, final byte[] readData, final int readOffset, final int readSize) throws IOException {
         int ret = getBus().writeAndReadBytesDirect(this, writeSize, writeOffset, writeData, readSize, readOffset, readData);
         if (ret < 0) {
-            throw new IOException("Error reading from " + makeDescription() + ". Got '" + ret + "'.");
+            throw new I2CIOException("Error reading from " + makeDescription() + ". Got '" + ret + "'.", ret);
         }
         return ret;
     }
@@ -296,5 +296,15 @@ public class I2CDeviceImpl implements I2CDevice {
      */
     protected String makeDescription(int address) {
         return "I2CDevice on " + bus + " at address 0x" + Integer.toHexString(deviceAddress) + " to address 0x" + Integer.toHexString(address);
+    }
+
+    static public class I2CIOException extends IOException {
+        int code;
+
+        public I2CIOException(String msg, int code) {
+            super(msg);
+
+            this.code = code;
+        }
     }
 }
