@@ -231,6 +231,10 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cReadBytesDirect
         (*env)->ReleaseByteArrayElements(env, bytes, body, 0);
     }
 
+    if(response < 0) {
+        return -errno;
+    }
+
     return response;
 }
 
@@ -307,6 +311,10 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cReadBytes
         (*env)->ReleaseByteArrayElements(env, bytes, body, 0);
     }
 
+    if(response < 0) {
+        return -errno;
+    }
+
     return response;
 }
 
@@ -351,6 +359,10 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cWriteAndReadBytes
             body[i + readOffset] = buf[i];
         }
         (*env)->ReleaseByteArrayElements(env, readBytes, body, 0);
+    }
+
+    if(response < 0) {
+        return -errno;
     }
 
     return response;
