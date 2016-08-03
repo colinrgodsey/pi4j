@@ -218,7 +218,7 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cReadBytesDirect
 
     response = read(fd, body + offset, size);
 
-    (*env)->ReleaseByteArrayElements(env, bytes, body, 0)
+    (*env)->ReleaseByteArrayElements(env, bytes, body, 0);
 
     if (response < 0) {
         return -errno - 30000;
@@ -269,8 +269,6 @@ JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cReadByte
 JNIEXPORT jint JNICALL Java_com_pi4j_jni_I2C_i2cReadBytes
   (JNIEnv *env, jclass obj, jint fd, jint deviceAddress, jint localAddress, jint size, jint offset, jbyteArray bytes)
 {
-    int i;
-    
     int response = ioctl(fd, I2C_SLAVE, deviceAddress);
     if (response < 0) {
         return -errno - 10000;
