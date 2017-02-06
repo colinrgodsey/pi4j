@@ -11,7 +11,7 @@ package com.pi4j.component.lcd.impl;
  * this project can be found here:  http://www.pi4j.com/
  * **********************************************************************
  * %%
- * Copyright (C) 2012 - 2016 Pi4J
+ * Copyright (C) 2012 - 2017 Pi4J
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -45,10 +45,6 @@ public class GpioLcdDisplay extends LCDBase implements LCD
         this.rows = rows;
         this.columns = columns;
         int bits[] = { 0,0,0,0,0,0,0,0 };
-
-        // set wiringPi interface for internal use
-        // we will use the WiringPi pin number scheme with the wiringPi library
-        com.pi4j.wiringpi.Gpio.wiringPiSetup();
 
         // seed bit pin address array
         for(int index = 0; index < 8; index++) {

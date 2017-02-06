@@ -1,10 +1,12 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e # exit on error
+
 ###
 # #%L
 # **********************************************************************
 # ORGANIZATION  :  Pi4J
-# PROJECT       :  Pi4J :: JNI Native Library
-# FILENAME      :  build-local.sh
+# PROJECT       :  Pi4J :: Java Examples (for OrangePi)
+# FILENAME      :  run
 #
 # This file is part of the Pi4J project. More information about
 # this project can be found here:  http://www.pi4j.com/
@@ -28,19 +30,27 @@
 # #L%
 ###
 
-echo "-------------------------------------------"
-echo "BUILDING Pi4J NATIVE LIBRARY"
-echo "-------------------------------------------"
+# CHECK FOR MISSING CLI ARGUMENTS
+if [ $# -eq 0 ]; then
+    echo
+    echo "No program name argument supplied!"
+    echo "Use 'run <ProgramName>'"
+    echo
+    exit 1;
+fi
 
-# ----------------------------------
-# COPY SOURCES TO TARGET FOLDER
-# ----------------------------------
-mkdir -p target/native
-cp -R src/main/native target
-cd target/native
+# DEFINED APP NAMESPACE
+NAMESPACE=orangepi.
 
-# ----------------------------------
-# LAUNCH BUILD FROM TARGET FOLDER
-# ----------------------------------
-chmod +x build.sh
-./build.sh $@
+# GET PROGRAM NAME FROM FIRST CLI ARG
+NAME=$1;
+
+# REMOVE .java FILE EXTENSION FROM NAME ARG IF EXISTS
+NAME=${NAME/.java/}
+
+# REMOVE NAMESPACE FROM NAME ARG IF EXISTS
+NAME=${NAME#$NAMESPACE}
+
+# LAUNCH PI4J SAMPLE PROGRAM
+set -x #echo on
+sudo java -classpath .:classes:'*':classes:/opt/pi4j/lib/'*' $NAMESPACE$NAME $@
