@@ -338,29 +338,6 @@ public class LinuxFile extends RandomAccessFile {
         }
     }
 
-    public static class LinuxFileException extends IOException {
-        int code;
-
-        public LinuxFileException() {
-            this(errno());
-        }
-
-        LinuxFileException(int code) {
-            super(strerror(code));
-
-            this.code = code;
-        }
-
-        /**
-         * Gets the POSIX code associated with this IO error
-         *
-         * @return POSIX error code
-         */
-        public int getCode() {
-            return code;
-        }
-    }
-
     public enum MMAPProt {
         NONE(0),
         READ(1),

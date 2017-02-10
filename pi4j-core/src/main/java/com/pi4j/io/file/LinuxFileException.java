@@ -5,7 +5,7 @@ package com.pi4j.io.file;
  * **********************************************************************
  * ORGANIZATION  :  Pi4J
  * PROJECT       :  Pi4J :: Java Library (Core)
- * FILENAME      :  FileException.java
+ * FILENAME      :  LinuxFile.java
  *
  * This file is part of the Pi4J project. More information about
  * this project can be found here:  http://www.pi4j.com/
@@ -29,8 +29,33 @@ package com.pi4j.io.file;
  * #L%
  */
 
-/**
- * Created by crgodsey on 8/23/16.
- */
-public class FileException {
+import jnr.constants.platform.Errno;
+
+import java.io.IOException;
+
+public class LinuxFileException extends IOException {
+    int code;
+
+    public LinuxFileException() {
+        this(LinuxFile.errno());
+    }
+
+    LinuxFileException(int code) {
+        super(LinuxFile.strerror(code));
+
+        this.code = code;
+    }
+
+    /**
+     * Gets the POSIX code associated with this IO error
+     *
+     * @return POSIX error code
+     */
+    public int getCode() {
+        return code;
+    }
+
+    public Errno getErrno() {
+        return Errno.valueOf(code);
+    }
 }
