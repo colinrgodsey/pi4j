@@ -31,11 +31,12 @@ package com.pi4j.component;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ObserveableComponentBase extends ComponentBase implements ObserveableComponent {
 
-    protected final List<ComponentListener> listeners = new ArrayList<ComponentListener>();;
+    protected final List<ComponentListener> listeners = new ArrayList<>();;
 
     protected synchronized void addListener(ComponentListener... listener){
         if (listener == null || listener.length == 0) {
@@ -43,9 +44,7 @@ public class ObserveableComponentBase extends ComponentBase implements Observeab
         }
 
         // add new listeners
-        for (ComponentListener lsnr : listener) {
-            listeners.add(lsnr);
-        }
+        Collections.addAll(listeners, listener);
     }
 
     protected synchronized void removeListener(ComponentListener... listener) {

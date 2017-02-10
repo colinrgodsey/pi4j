@@ -56,8 +56,8 @@ public class LinuxFile extends RandomAccessFile {
     public static final int wordSize = getWordSize();
     public static final int localBufferSize = 2048; //about 1 page
 
-    public static final ThreadLocal<ByteBuffer> localDataBuffer = new ThreadLocal<ByteBuffer>();
-    public static final ThreadLocal<IntBuffer> localOffsetsBuffer = new ThreadLocal<IntBuffer>();
+    public static final ThreadLocal<ByteBuffer> localDataBuffer = new ThreadLocal<>();
+    public static final ThreadLocal<IntBuffer> localOffsetsBuffer = new ThreadLocal<>();
 
     private static final Constructor directByteBufferConstructor;
 
@@ -221,7 +221,8 @@ public class LinuxFile extends RandomAccessFile {
 
     private static int getWordSize() {
         //TODO: there has to be a better way...
-        return System.getProperty("sun.arch.data.model") == "64" ? 8 : 4;
+        final String archDataModel = System.getProperty("sun.arch.data.model");
+        return "64".equals(archDataModel) ? 8 : 4;
     }
 
     @Override
@@ -309,9 +310,6 @@ public class LinuxFile extends RandomAccessFile {
 
             //clean object so it doesnt clean on collection
             ((Cleaner)cleanerField.get(mappedBuffer)).clean();
-
-            //reset mark and position to new 0 capacity
-            mappedBuffer.clear();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
             throw new InternalError();
