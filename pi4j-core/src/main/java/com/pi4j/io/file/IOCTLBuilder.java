@@ -29,6 +29,7 @@ package com.pi4j.io.file;
  * #L%
  */
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -37,8 +38,9 @@ import java.nio.IntBuffer;
 public class IOCTLBuilder {
     public final ByteBuffer dataBuffer;
     public final IntBuffer offsetBuffer;
+    public final LinuxFile device;
 
-    public IOCTLBuilder(ByteBuffer dataBuffer, IntBuffer offsetBuffer) {
+    public IOCTLBuilder(LinuxFile device, ByteBuffer dataBuffer, IntBuffer offsetBuffer) {
         if(!dataBuffer.isDirect() || !offsetBuffer.isDirect())
             throw new IllegalArgumentException("Direct buffers required for ioctl");
 
@@ -46,6 +48,7 @@ public class IOCTLBuilder {
                 || offsetBuffer.order() != ByteOrder.nativeOrder())
             throw new IllegalArgumentException("Buffers must be native ByteOrder");
 
+        this.device = device;
         this.dataBuffer = dataBuffer;
         this.offsetBuffer = offsetBuffer;
     }
@@ -103,5 +106,16 @@ public class IOCTLBuilder {
 
     public void setPointer(int pointerLocation, int dataOffset) {
         offsetBuffer.put(pointerLocation).put(dataOffset);
+    }
+
+    public void ioctl(long command, int entryOffset) throws IOException {
+        dataBuffer.position(entryOffset);
+        offsetBuffer.flip();
+
+        device.ioctl(command, dataBuffer, offsetBuffer);
+    }
+
+    public void ioctl(long command) throws IOException {
+        ioctl(command, 0);
     }
 }
